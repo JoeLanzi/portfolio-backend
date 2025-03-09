@@ -52,7 +52,7 @@ def process_simple_request(query):
     
     # Call OpenAI API
     response = openai.chat.completions.create(
-        model="gpt-4-mini",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": prompt},
             {"role": "user", "content": query}
