@@ -4,7 +4,7 @@ from typing import Optional
 import os
 import logging
 import sys
-from .rag import process_rag_request
+# from .rag import process_rag_request
 
 app = FastAPI()
 
