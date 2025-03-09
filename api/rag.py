@@ -1,5 +1,6 @@
 import os
 import openai
+from .resume import my_resume
 # from .embedding import query_collection
 
 # Set OpenAI API key
@@ -45,9 +46,13 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
 #     return response.choices[0].message.content
 
 def process_simple_request(query):
-    prompt = f"""You are an AI that can answer questions about Joe's portfolio, projects, blogs, and resume. 
-    But right now it's still in the works. So you can answer their questions but always say that disclaimer. 
+    prompt = f"""
+    You are an AI that can answer questions about Joe's portfolio, projects, blogs, and resume. 
+    But right now it's still in the works, which means more details will be added soon.
+    So you can answer their questions but always say that disclaimer. 
     For now, the users can just chat with the AI for now.
+
+    This is my resume if you need it: {my_resume}
     """
     
     # Call OpenAI API
