@@ -45,7 +45,7 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
     
 #     return response.choices[0].message.content
 
-def process_simple_request(query):
+async def process_simple_request(query):
     prompt = f"""
     You are an AI that can answer questions about Joe's portfolio, projects, blogs, and resume. 
     But right now it's still in the works, which means more details will be added soon.
@@ -58,14 +58,17 @@ def process_simple_request(query):
     """
     
     # Call OpenAI API
-    response = openai.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": prompt},
             {"role": "user", "content": query}
         ],
         temperature=0.5,
-        max_tokens=500
+        max_tokens=500,
+        stream=True
     )
     
-    return response.choices[0].message.content
+    for chunk in response:
+        if 'choices' in chunk and len(chunk['choices']) > 0:
+            yield chunk['choices'][0]['delta'].get('content', '')

@@ -5,6 +5,7 @@ import os
 import logging
 import sys
 from .rag import process_simple_request
+from starlette.responses import StreamingResponse
 
 app = FastAPI()
 
@@ -47,12 +48,11 @@ async def chat(
             logging.info(f"Received file: {file.filename}")
             logging.info(f"File content: {file_content[:100]}")
 
-        response = process_simple_request(
-            query=message
-        )
+        async def response_generator():
+            async for response in process_simple_request(query=message):
+                yield response
 
-        logging.info(f"Received message: {message} {threadId} {conversationId} {sequenceId} Response: {response}")
-        return {"message": response}
+        return StreamingResponse(response_generator(), media_type="text/plain")
     except Exception as e:
         logging.error(f"Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
