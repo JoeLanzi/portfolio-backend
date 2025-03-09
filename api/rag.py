@@ -52,6 +52,8 @@ def process_simple_request(query):
     So you can answer their questions but always say that disclaimer. 
     For now, the users can just chat with the AI for now.
 
+    Summarize your answers for now, unless they ask for specifics. DO NOT provide too much detail.
+
     This is my resume if you need it: {my_resume}
     """
     
