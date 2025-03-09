@@ -27,6 +27,10 @@ async def verify_request(authorization: Optional[str] = Header(None)):
         raise HTTPException(status_code=401, detail="Unauthorized")
     return True
 
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
 @app.post("/api/chat")
 async def chat(
     message: str = Form(...),
