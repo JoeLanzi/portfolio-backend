@@ -4,7 +4,7 @@ from typing import Optional
 import os
 import logging
 import sys
-# from .rag import process_rag_request
+from .rag import process_simple_request
 
 app = FastAPI()
 
@@ -27,9 +27,9 @@ async def verify_request(authorization: Optional[str] = Header(None)):
         raise HTTPException(status_code=401, detail="Unauthorized")
     return True
 
-# @app.get("/health")
-# async def health():
-#     return {"status": "ok"}
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
 
 @app.post("/api/chat")
 async def chat(
@@ -47,15 +47,13 @@ async def chat(
             logging.info(f"Received file: {file.filename}")
             logging.info(f"File content: {file_content[:100]}")
 
-        # response = process_rag_request(
-        #     query=message,
-        #     collection_name=None,
-        #     additional_context=None
-        # )
-        # return {"response": response}
-        response = f"Message received: '{message}'. AI Chat is coming soon.."
+        response = process_simple_request(
+            query=message,
+            collection_name=None,
+            additional_context=None
+        )
 
-        logging.info(f"Received message: {message} {threadId} {conversationId} {sequenceId}")
+        logging.info(f"Received message: {message} {threadId} {conversationId} {sequenceId} Response: {response}")
         return {"message": response}
     except Exception as e:
         logging.error(f"Error: {str(e)}")

@@ -22,7 +22,6 @@ This repository contains the backend code for an AI chat application. The backen
     ├── local.settings.json 
     ├── requirements.txt 
     ├── start.ps1 
-    ├── vercel.json 
     └── README.md
 
 - **api/**: Contains the main application code.
@@ -33,7 +32,6 @@ This repository contains the backend code for an AI chat application. The backen
 - **local.settings.json**: Contains local environment variables for development.
 - **requirements.txt**: Lists the Python dependencies required for the project.
 - **start.ps1**: A PowerShell script to set up the environment and run the application locally.
-- **vercel.json**: Configuration file for deploying the application on Vercel.
 - **README.md**: This file.
 
 ## Getting Started

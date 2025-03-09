@@ -1,9 +1,9 @@
-# import os
-# import openai
+import os
+import openai
 # from .embedding import query_collection
 
-# # Set OpenAI API key
-# openai.api_key = os.environ.get("OPENAI_API_KEY")
+# Set OpenAI API key
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 # def process_rag_request(query, collection_name, additional_context=None):
 #     # Query the vector database for relevant documents
@@ -43,3 +43,22 @@
 #     )
     
 #     return response.choices[0].message.content
+
+def process_simple_request(query):
+    prompt = f"""You are an AI that can answer questions about Joe's portfolio, projects, blogs, and resume. 
+    But right now it's still in the works. So you can answer their questions but always say that disclaimer. 
+    For now, the users can just chat with the AI for now.
+    """
+    
+    # Call OpenAI API
+    response = openai.chat.completions.create(
+        model="gpt-4-mini",
+        messages=[
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": query}
+        ],
+        temperature=0.5,
+        max_tokens=500
+    )
+    
+    return response.choices[0].message.content
