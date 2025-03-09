@@ -48,9 +48,7 @@ async def chat(
             logging.info(f"File content: {file_content[:100]}")
 
         response = process_simple_request(
-            query=message,
-            collection_name=None,
-            additional_context=None
+            query=message
         )
 
         logging.info(f"Received message: {message} {threadId} {conversationId} {sequenceId} Response: {response}")
