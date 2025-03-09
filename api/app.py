@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO)
 # Basic verification function to authorize requests
 async def verify_request(authorization: Optional[str] = Header(None)):
     api_key = os.environ.get("API_KEY")
-    logging.info(f"Authorization header received: {authorization}")
+    # logging.info(f"Authorization header received: {authorization}")
     if not authorization or authorization != f"Bearer {api_key}":
         raise HTTPException(status_code=401, detail="Unauthorized")
     return True
