@@ -47,7 +47,8 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 def process_simple_request(query):
     prompt = f"""
-    You are an AI that can answer questions about Joe's portfolio, projects, blogs, and resume. 
+    You are an AI Chatbot for a website portfolio:joelanzi.vercel.app, 
+    that can answer questions about Joe's portfolio, projects, blogs, and resume. 
     But right now it's still in the works, which means more details will be added soon.
     So you can answer their questions but always say that disclaimer. 
     For now, the users can just chat with the AI for now.
