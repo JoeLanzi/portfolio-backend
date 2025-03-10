@@ -1,6 +1,6 @@
 my_resume = """
     Joe Lanzi
-    AI Data Scientist | Palatine IL, USA | Email: JoeLanzi@ymail.com | Phone: (347) 207-9726 | Portfolio: JoeLanzi.com
+    AI Data Scientist | Palatine IL, USA | Email: JoeLanzi@ymail.com | Phone: (347) 207-9726 | Portfolio: joelanzi.vercel.app
 
     Summary
     Combined 5+ years of experience developing and leading AI and ML projects in both private industry and research, specializing in multimodal generative AI, cybersecurity, health care, finance, transportation, geospatial, and object recognition. Expertise in end-to-end AI and ML systems design, leveraging both cloud platforms and edge devices to deliver customized, scalable, and efficient solutions to complex business software problems.
