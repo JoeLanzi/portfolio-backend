@@ -6,6 +6,13 @@ import logging
 import sys
 from .rag import process_simple_request
 
+from sqlalchemy import create_engine, Column, String, Text, DateTime, Integer
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from datetime import datetime
+
+import uuid
+
 app = FastAPI()
 
 app.add_middleware(
@@ -19,10 +26,26 @@ app.add_middleware(
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
+# SQLite database setup
+DATABASE_URL = "sqlite:///./chat_history.db"
+engine = create_engine(DATABASE_URL)
+Base = declarative_base()
+
+class ChatMessage(Base):
+    __tablename__ = "messages"
+    id = Column(String, primary_key=True)
+    thread_id = Column(String)
+    sequence_id = Column(Integer)
+    user_message = Column(Text)
+    assistant_message = Column(Text)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+
+Base.metadata.create_all(bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 # Basic verification function to authorize requests
 async def verify_request(authorization: Optional[str] = Header(None)):
     api_key = os.environ.get("API_KEY")
-    # logging.info(f"Authorization header received: {authorization}")
     if not authorization or authorization != f"Bearer {api_key}":
         raise HTTPException(status_code=401, detail="Unauthorized")
     return True
@@ -47,16 +70,37 @@ async def chat(
             logging.info(f"Received file: {file.filename}")
             logging.info(f"File content: {file_content[:100]}")
 
-        response = process_simple_request(
-            query=message
-        )
+        db = SessionLocal()
+        
+        # Retrieve conversation history
+        chat_history = db.query(ChatMessage).filter(ChatMessage.thread_id == threadId).order_by(ChatMessage.sequence_id).all()
 
-        logging.info(f"Received message: {message} {threadId} {conversationId} {sequenceId} Response: {response}")
+        # Format history for OpenAI
+        messages = []
+        for msg in chat_history:
+            messages.append({"role": "user", "content": msg.user_message})
+            messages.append({"role": "assistant", "content": msg.assistant_message})
+        
+        # Add new user message
+        messages.append({"role": "user", "content": message})
+        
+        # Generate response with full history
+        response = process_simple_request(chat_history=messages)
+        
+        # Store both messages in one entry
+        db.add(ChatMessage(
+            id=conversationId,
+            thread_id=threadId,
+            sequence_id=int(sequenceId),
+            user_message=message,
+            assistant_message=response
+        ))
+        db.commit()
+
         return {"message": response}
     except Exception as e:
+        db.rollback()
         logging.error(f"Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 9000)))
+    finally:
+        db.close()

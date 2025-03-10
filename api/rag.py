@@ -45,12 +45,12 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
     
 #     return response.choices[0].message.content
 
-def process_simple_request(query):
-    prompt = f"""
+def process_simple_request(chat_history: list):
+    system_prompt  = f"""
     You are an AI Chatbot for a website portfolio:joelanzi.vercel.app, 
     that can answer questions about Joe's portfolio, projects, blogs, and resume. 
     But right now it's still in the works, which means more details will be added soon.
-    So you can answer their questions but always say that disclaimer. 
+    So you can answer their questions but always say a short disclaimer. 
     For now, the users can just chat with the AI for now.
 
     Summarize your answers for now, unless they ask for specifics. DO NOT provide too much detail.
@@ -58,13 +58,12 @@ def process_simple_request(query):
     This is my resume if you need it: {my_resume}
     """
     
-    # Call OpenAI API
+    messages = [{"role": "system", "content": system_prompt}]
+    messages.extend(chat_history)
+    
     response = openai.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": prompt},
-            {"role": "user", "content": query}
-        ],
+        messages=messages,
         temperature=0.5,
         max_tokens=500
     )
